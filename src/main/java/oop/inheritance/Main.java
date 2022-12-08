@@ -5,14 +5,14 @@ import oop.inheritance.data.SupportedTerminal;
 public class Main {
 
     public static void main(String[] args) {
-        Application application = new Application(SupportedTerminal.INGENICO);
+        Application1 application = new Application1(SupportedTerminal.INGENICO);
 
         while (true) {
             run(application);
         }
     }
 
-    public static void run(Application application) {
+    public static void run(Application1 application) {
         application.clearScreen();
         application.showMenu();
 

@@ -1,21 +1,22 @@
 package oop.inheritance;
 
-import java.time.LocalDateTime;
-
 import oop.inheritance.data.CommunicationType;
 import oop.inheritance.data.SupportedTerminal;
-import oop.library.ingenico.model.Card;
 import oop.library.ingenico.model.Transaction;
 import oop.library.ingenico.model.TransactionResponse;
+import oop.library.ingenico.model.Card;
 import oop.library.ingenico.services.*;
 import oop.library.v240m.VerifoneV240mDisplay;
 
-public class Application {
+import java.time.LocalDateTime;
 
-    private CommunicationType communicationType = CommunicationType.ETHERNET;
-    private SupportedTerminal supportedTerminal;
+public class Application1 {
 
-    public Application(SupportedTerminal supportedTerminal) {
+    private final CommunicationType communicationType = CommunicationType.ETHERNET;
+    private final SupportedTerminal supportedTerminal;
+    private String hostReference;
+
+    public Application1(SupportedTerminal supportedTerminal) {
         this.supportedTerminal = supportedTerminal;
     }
 
@@ -82,6 +83,7 @@ public class Application {
     }
 
     private void printReceipt(Transaction transaction, String hostReference) {
+        this.hostReference = hostReference;
         IngenicoPrinter ingenicoPrinter = new IngenicoPrinter();
         Card card = transaction.getCard();
 
@@ -102,24 +104,24 @@ public class Application {
         TransactionResponse transactionResponse = null;
 
         switch (communicationType) {
-            case ETHERNET:
+            case ETHERNET -> {
                 ethernet.open();
                 ethernet.send(transaction);
                 transactionResponse = ethernet.receive();
                 ethernet.close();
-                break;
-            case GPS:
+            }
+            case GPS -> {
                 gps.open();
                 gps.send(transaction);
                 transactionResponse = gps.receive();
                 gps.close();
-                break;
-            case MODEM:
+            }
+            case MODEM -> {
                 modem.open();
                 modem.send(transaction);
                 transactionResponse = modem.receive();
                 modem.close();
-                break;
+            }
         }
 
         return transactionResponse;
@@ -144,5 +146,13 @@ public class Application {
 
             verifoneV240mDisplay.clear();
         }
+    }
+
+    public String getHostReference() {
+        return hostReference;
+    }
+
+    public void setHostReference(String hostReference) {
+        this.hostReference = hostReference;
     }
 }
